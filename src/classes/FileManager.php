@@ -6,7 +6,7 @@ class FileManager {
 	private $hasHeader;
 	private $delimiters;
 
-	public function __construct($fileName, $hasHeader = false, $delimiters=';') {
+	public function __construct($fileName, $hasHeader = false, $delimiters = ';') {
 		$this->fileName = $fileName;
 		$this->hasHeader = $hasHeader;
 		$this->loadData();
@@ -40,10 +40,10 @@ class FileManager {
 			}
 
 			// Se nao tem header, basta retornar array naturalmente indexado
-			if ($this->hasHeader == false) {
-				$array[$i++] = explode($this->delimiters, $line);
-				continue;
-			}
+			//if ($this->hasHeader == false) {
+			$array[$i++] = explode($this->delimiters, $line);
+			continue;
+			//}
 
 			// Se tem header e ele ja esta definido, retorna array associativo
 			$lineAsArray = explode($this->delimiters, $line);
