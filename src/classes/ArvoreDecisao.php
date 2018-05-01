@@ -1,63 +1,78 @@
 <?php
 
 class ArvoreDecisao {
-	private $dados;
-	private $indexLabel;
-	private $listIndexAttr = array();
-	private $subArvore;
+	private $data;
+	private $node;
+	private $attrList;
 
-	public function __construct($dados, $indexLabel) {
-		$this->dados = $dados;
-		$this->indexLabel = $indexLabel;
-		$this->processAttr();
+	public function __construct($data, $attrList) {
+		$this->data = $data;
+		$this->attrList = $attrList;
+		$this->node = array();
 	}
 
-	private function processAttr() {
-		foreach ($this->dados as $line) {
-			foreach ($line as $attr => $value) {
-				if ($attr == $this->indexLabel) {
-					continue;
-				}
+	public function build() {
 
-				$this->listIndexAttr[$attr] = $attr;
-			}
-		}
-	}
+		$labelListCounter = labelCounter($this->data);
 
-	public function build($level = 0) {
-		if (count($this->listIndexAttr) == 0) {
-			echo "\t => \t" . $this->dados[0][$this->indexLabel];
-			return $this->dados[0][$this->indexLabel];
+		if (count($labelListCounter) == 1) {
+			return key($labelListCounter) . " Origem1";
 		}
 
-		$array = array();
-		$attr = array_shift($this->listIndexAttr);
+		if (empty($this->attrList)) {
+			return labelCommon($labelListCounter) . " Origem2";
+		}
 
-		foreach ($this->dados as $line) {
+		$bestAttr = findBestAttr($this->data, $this->attrList);
+
+		$this->attrList = array_diff($this->attrList, [$bestAttr]);
+
+		$subDatas = array();
+		foreach ($this->data as $line) {
 			$newLine = $line;
-			unset($newLine[$attr]);
-
-			$array[$line[$attr]][] = $newLine;
+			unset($newLine[$bestAttr]);
+			$subDatas[$line[$bestAttr]][] = $newLine;
 		}
 
-		$level++;
+		foreach ($subDatas as $attr => $subData) {
+			$arvore = new ArvoreDecisao($subData, $this->attrList);
+			$this->node[$attr][] = $arvore->build();
+		}
 
-		foreach ($array as $attr => $value) {
-			//Debug
-			echo "<br>";
-			for ($i = 0; $i < $level; $i++) {
-				echo "\t";
+		return $this->node;
+	}
+
+	private function labelCounter($data) {
+		$reverseLine = array_flip($data[0]);
+		$labelIndex = array_pop($reverseLine);
+
+		$labelListCounter = array();
+		foreach ($data as $line) {
+			if (isset($labelListCounter[$line[$labelIndex]]) == false) {
+				$labelListCounter[$line[$labelIndex]] = 1;
+				continue;
 			}
-			echo $attr;
-			// Fim Debug
-
-			$newArvore = new ArvoreDecisao($value, $this->indexLabel);
-			$this->subArvore[] = $newArvore->build($level);
+			$labelListCounter[$line[$labelIndex]] += 1;
 		}
+		return $labelListCounter;
+	}
 
-		// Liberando espaco, visto que nao sera mais utilizada
-		unset($this->dados);
-		return $this;
+	private function labelCommon($labelListCounter) {
+		$labelBigger = 0;
+		$maxValue = 0;
+		foreach ($labelListCounter as $label => $counter) {
+			if ($counter > $maxValue) {
+				$labelBigger = $label;
+				$maxValue = $counter;
+			}
+		}
+		return $labelBigger;
+	}
+
+	private function findBestAttr($data, $attrList) {
+		foreach ($attrList as $key => $value) {
+			return $value;
+		}
 	}
 
 }
