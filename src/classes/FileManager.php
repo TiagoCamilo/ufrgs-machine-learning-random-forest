@@ -4,11 +4,13 @@ class FileManager {
 	private $fileName;
 	private $fileData;
 	private $hasHeader;
+	private $delimiters;
 
-	public function __construct($fileName, $hasHeader = false) {
+	public function __construct($fileName, $hasHeader = false, $delimiters=';') {
 		$this->fileName = $fileName;
 		$this->hasHeader = $hasHeader;
 		$this->loadData();
+		$this->delimiters = $delimiters;
 	}
 
 	public function loadData() {
@@ -33,18 +35,18 @@ class FileManager {
 			// Se deve existir cabecalho e ainda nao esta definido
 			if ($this->hasHeader == true && count($headers) == 0) {
 				// Assume que primeira linha é o header
-				$headers = explode(";", $line);
+				$headers = explode($this->delimiters, $line);
 				continue;
 			}
 
 			// Se nao tem header, basta retornar array naturalmente indexado
 			if ($this->hasHeader == false) {
-				$array[$i++] = explode(";", $line);
+				$array[$i++] = explode($this->delimiters, $line);
 				continue;
 			}
 
 			// Se tem header e ele ja esta definido, retorna array associativo
-			$lineAsArray = explode(";", $line);
+			$lineAsArray = explode($this->delimiters, $line);
 			foreach ($headers as $attr) {
 				// Adiciona todos atributos na mesma linha
 				$array[$i][$attr] = array_shift($lineAsArray);
