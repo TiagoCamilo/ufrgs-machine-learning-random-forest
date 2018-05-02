@@ -13,17 +13,17 @@ class ArvoreDecisao {
 
 	public function build() {
 
-		$labelListCounter = labelCounter($this->data);
+		$labelListCounter = $this->labelCounter($this->data);
 
 		if (count($labelListCounter) == 1) {
 			return key($labelListCounter) . " Origem1";
 		}
 
 		if (empty($this->attrList)) {
-			return labelCommon($labelListCounter) . " Origem2";
+			return $this->labelCommon($labelListCounter) . " Origem2";
 		}
 
-		$bestAttr = findBestAttr($this->data, $this->attrList);
+		$bestAttr = $this->findBestAttr($this->data, $this->attrList);
 
 		$this->attrList = array_diff($this->attrList, [$bestAttr]);
 
@@ -70,6 +70,7 @@ class ArvoreDecisao {
 	}
 
 	private function findBestAttr($data, $attrList) {
+		return informationGain($data, $attrList);
 		foreach ($attrList as $key => $value) {
 			return $value;
 		}

@@ -7,9 +7,9 @@ $fileHandler = new FileManager('dados/dadosBenchmark_validacaoAlgoritmoAD.csv', 
 
 $data = $fileHandler->getDataAsArray();
 echo '<pre>';
-//$arvore = new ArvoreDecisao($data, array(0, 1, 2, 3));
-//var_dump($arvore->build());
-
+$arvore = new ArvoreDecisao($data, array(0, 1, 2, 3));
+var_dump($arvore->build());
+//die();
 /*
 //Entradas:
 Conjunto de treinamento, D = {(xk, f (xk)), k =1,...n}
@@ -55,31 +55,38 @@ function informationGain($data, $attrList) {
 
 	}
 
-	$counter = labelCounter($data, 0);
-
 	$infoDAttr = array();
-	$entropiaMedia = 0;
-	foreach ($counter as $key => $value) {
-		$sizeAttr = 0;
-		foreach ($value as $index) {
-			$sizeAttr += $index;
+	$menorEntropia = 100;
+	//$melhorAttr
+	foreach ($attrList as $valueAttr) {
+		$counter = attrCounter($data, $valueAttr);
+		$entropiaMedia = 0;
+		foreach ($counter as $key => $value) {
+			$sizeAttr = 0;
+			foreach ($value as $index) {
+				$sizeAttr += $index;
+			}
+
+			$infoDAttr[$key] = 0;
+			foreach ($value as $index) {
+				$infoDAttr[$key] -= (($index / $sizeAttr) * log(($index / $sizeAttr), 2));
+
+			}
+			$entropiaMedia += ($sizeAttr / $sizeData) * $infoDAttr[$key];
+		}
+		if ($entropiaMedia < $menorEntropia) {
+			$menorEntropia = $entropiaMedia;
+			$melhorAttr = $valueAttr;
 		}
 
-		$infoDAttr[$key] = 0;
-		foreach ($value as $index) {
-			$infoDAttr[$key] -= (($index / $sizeAttr) * log(($index / $sizeAttr), 2));
-
-		}
-		$entropiaMedia += ($sizeAttr / $sizeData) * $infoDAttr[$key];
+		$diff = $infoD - $entropiaMedia;
 
 	}
-	var_dump($entropiaMedia);
 
-	//return $counter;
-
+	return $melhorAttr;
 }
 
-function labelCounter($data, $attrIndex) {
+function attrCounter($data, $attrIndex) {
 	$reverseLine = array_flip($data[0]);
 	$labelIndex = array_pop($reverseLine);
 
