@@ -50,17 +50,17 @@ function informationGain($data, $attrList) {
 
 	$sizeData = count($data);
 	$infoD = 0;
-	foreach ($labelListCounter as $value) {
-		$infoD -= (($value / $sizeData) * log(($value / $sizeData), 2));
+	foreach ($labelListCounter as $counter) {
+		$infoD -= (($counter / $sizeData) * log(($counter / $sizeData), 2));
 
 	}
 
 	$infoDAttr = array();
-	$menorEntropia = 100;
-	//$melhorAttr
+	$lowerEntropy = 100;
+
 	foreach ($attrList as $valueAttr) {
 		$counter = attrCounter($data, $valueAttr);
-		$entropiaMedia = 0;
+		$avgEntropy = 0;
 		foreach ($counter as $key => $value) {
 			$sizeAttr = 0;
 			foreach ($value as $index) {
@@ -72,18 +72,18 @@ function informationGain($data, $attrList) {
 				$infoDAttr[$key] -= (($index / $sizeAttr) * log(($index / $sizeAttr), 2));
 
 			}
-			$entropiaMedia += ($sizeAttr / $sizeData) * $infoDAttr[$key];
+			$avgEntropy += ($sizeAttr / $sizeData) * $infoDAttr[$key];
 		}
-		if ($entropiaMedia < $menorEntropia) {
-			$menorEntropia = $entropiaMedia;
-			$melhorAttr = $valueAttr;
+		if ($avgEntropy < $lowerEntropy) {
+			$lowerEntropy = $avgEntropy;
+			$bestAttr = $valueAttr;
 		}
 
-		$diff = $infoD - $entropiaMedia;
+		$diff = $infoD - $avgEntropy;
 
 	}
 
-	return $melhorAttr;
+	return $bestAttr;
 }
 
 function attrCounter($data, $attrIndex) {
