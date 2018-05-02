@@ -7,8 +7,8 @@ $fileHandler = new FileManager('dados/dadosBenchmark_validacaoAlgoritmoAD.csv', 
 
 $data = $fileHandler->getDataAsArray();
 echo '<pre>';
-$arvore = new ArvoreDecisao($data, array(0, 1, 2, 3));
-var_dump($arvore->build());
+//$arvore = new ArvoreDecisao($data, array(0, 1, 2, 3));
+//var_dump($arvore->build());
 
 /*
 //Entradas:
@@ -30,3 +30,67 @@ Função arvoreDeDecisao(D,L)
 4.4.3 Senão, associe N a uma subárvore retornada por arvoreDeDecisao(Dv,L)
 4.5 retorne N
  */
+
+var_dump(informationGain($data, array(0, 1, 2, 3)));
+
+function informationGain($data, $attrList) {
+	$value = 0;
+
+	$reverseLine = array_flip($data[0]);
+	$labelIndex = array_pop($reverseLine);
+
+	$labelListCounter = array();
+	foreach ($data as $line) {
+		if (isset($labelListCounter[$line[$labelIndex]]) == false) {
+			$labelListCounter[$line[$labelIndex]] = 1;
+			continue;
+		}
+		$labelListCounter[$line[$labelIndex]] += 1;
+	}
+
+	$sizeData = count($data);
+	$infoD = 0;
+	foreach ($labelListCounter as $value) {
+		$infoD -= (($value / $sizeData) * log(($value / $sizeData), 2));
+
+	}
+
+	$counter = labelCounter($data, 0);
+
+	$infoDAttr = array();
+	$entropiaMedia = 0;
+	foreach ($counter as $key => $value) {
+		$sizeAttr = 0;
+		foreach ($value as $index) {
+			$sizeAttr += $index;
+		}
+
+		$infoDAttr[$key] = 0;
+		foreach ($value as $index) {
+			$infoDAttr[$key] -= (($index / $sizeAttr) * log(($index / $sizeAttr), 2));
+
+		}
+		$entropiaMedia += ($sizeAttr / $sizeData) * $infoDAttr[$key];
+
+	}
+	var_dump($entropiaMedia);
+
+	//return $counter;
+
+}
+
+function labelCounter($data, $attrIndex) {
+	$reverseLine = array_flip($data[0]);
+	$labelIndex = array_pop($reverseLine);
+
+	$labelListCounter = array();
+	foreach ($data as $line) {
+
+		if (isset($labelListCounter[$line[$attrIndex]][$line[$labelIndex]]) == false) {
+			$labelListCounter[$line[$attrIndex]][$line[$labelIndex]] = 1;
+			continue;
+		}
+		$labelListCounter[$line[$attrIndex]][$line[$labelIndex]] += 1;
+	}
+	return $labelListCounter;
+}
