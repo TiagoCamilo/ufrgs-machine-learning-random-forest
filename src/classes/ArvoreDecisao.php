@@ -13,17 +13,17 @@ class ArvoreDecisao {
 
 	public function build() {
 
-		$labelListCounter = $this->labelCounter($this->data);
+		$labelListCounter = Util::labelCounter($this->data);
 
 		if (count($labelListCounter) == 1) {
 			return key($labelListCounter) . " Origem1";
 		}
 
 		if (empty($this->attrList)) {
-			return $this->labelCommon($labelListCounter) . " Origem2";
+			return Util::labelMostCommon($labelListCounter) . " Origem2";
 		}
 
-		$bestAttr = $this->findBestAttr($this->data, $this->attrList);
+		$bestAttr = $this->findBestAttr();
 
 		$this->attrList = array_diff($this->attrList, [$bestAttr]);
 
@@ -42,38 +42,9 @@ class ArvoreDecisao {
 		return $this->node;
 	}
 
-	private function labelCounter($data) {
-		$reverseLine = array_flip($data[0]);
-		$labelIndex = array_pop($reverseLine);
-
-		$labelListCounter = array();
-		foreach ($data as $line) {
-			if (isset($labelListCounter[$line[$labelIndex]]) == false) {
-				$labelListCounter[$line[$labelIndex]] = 1;
-				continue;
-			}
-			$labelListCounter[$line[$labelIndex]] += 1;
-		}
-		return $labelListCounter;
-	}
-
-	private function labelCommon($labelListCounter) {
-		$labelBigger = 0;
-		$maxValue = 0;
-		foreach ($labelListCounter as $label => $counter) {
-			if ($counter > $maxValue) {
-				$labelBigger = $label;
-				$maxValue = $counter;
-			}
-		}
-		return $labelBigger;
-	}
-
-	private function findBestAttr($data, $attrList) {
-		return informationGain($data, $attrList);
-		foreach ($attrList as $key => $value) {
-			return $value;
-		}
+	private function findBestAttr() {
+		$informationGain = new InformationGain($this->data, $this->attrList);
+		return $informationGain->compute();
 	}
 
 }
