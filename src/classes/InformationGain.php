@@ -25,7 +25,14 @@ class InformationGain {
 		$value = 0;
 
 		foreach ($this->attrList as $attr) {
-			$counter = $this->attrCounter($attr);
+
+			//Se nao é valor numerico(continuo)
+			if (is_numeric($this->data[0][$attr]) == false) {
+				$counter = $this->attrNominalCounter($attr);
+			} else {
+				$counter = $this->attrContinuousCounter($attr);
+			}
+
 			$avgEntropy = 0;
 			foreach ($counter as $key => $value) {
 				$sizeAttr = 0;
@@ -39,6 +46,7 @@ class InformationGain {
 				}
 				$avgEntropy += ($sizeAttr / $sizeData) * $infoDAttr[$key];
 			}
+			echo "<br>" . $attr . " | " . $avgEntropy . "<br>";
 			if ($avgEntropy < $lowerEntropy) {
 				$lowerEntropy = $avgEntropy;
 				$bestAttr = $attr;
@@ -49,7 +57,7 @@ class InformationGain {
 		return $bestAttr;
 	}
 
-	private function attrCounter($attrIndex) {
+	private function attrNominalCounter($attrIndex) {
 		$reverseLine = array_flip($this->data[0]);
 		$labelIndex = array_pop($reverseLine);
 
@@ -61,6 +69,32 @@ class InformationGain {
 			}
 			$labelListCounter[$line[$attrIndex]][$line[$labelIndex]] += 1;
 		}
+		return $labelListCounter;
+	}
+
+	public function attrContinuousCounter($attrIndex) {
+		$reverseLine = array_flip($this->data[0]);
+		$labelIndex = array_pop($reverseLine);
+
+		$cutValue = Util::getCutValue($this->data, $attrIndex);
+
+		$labelListCounter = array();
+		foreach ($this->data as $line) {
+			if ($line[$attrIndex] > $cutValue) {
+				if (isset($labelListCounter[">"][$line[$labelIndex]]) == false) {
+					$labelListCounter[">"][$line[$labelIndex]] = 1;
+					continue;
+				}
+				$labelListCounter[">"][$line[$labelIndex]] += 1;
+			} else {
+				if (isset($labelListCounter["<="][$line[$labelIndex]]) == false) {
+					$labelListCounter["<="][$line[$labelIndex]] = 1;
+					continue;
+				}
+				$labelListCounter["<="][$line[$labelIndex]] += 1;
+			}
+		}
+
 		return $labelListCounter;
 	}
 

@@ -28,4 +28,23 @@ class Util {
 		return $labelBigger;
 	}
 
+	public function getCutValue($data, $attrIndex) {
+		$minValue = null;
+		$maxValue = null;
+		foreach ($data as $line) {
+			if ($line[$attrIndex] > $maxValue || $maxValue == null) {
+				$maxValue = $line[$attrIndex];
+			}
+
+			if ($line[$attrIndex] < $minValue || $minValue == null) {
+				$minValue = $line[$attrIndex];
+			}
+		}
+
+		$amplitude = $maxValue - $minValue;
+		$cutValue = $maxValue - ($amplitude / 2);
+
+		return $cutValue;
+	}
+
 }

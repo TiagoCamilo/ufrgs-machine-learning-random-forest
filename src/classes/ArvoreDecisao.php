@@ -28,10 +28,25 @@ class ArvoreDecisao {
 		$this->attrList = array_diff($this->attrList, [$bestAttr]);
 
 		$subDatas = array();
-		foreach ($this->data as $line) {
-			$newLine = $line;
-			unset($newLine[$bestAttr]);
-			$subDatas[$line[$bestAttr]][] = $newLine;
+		//Se nao é valor numerico(continuo)
+		if (is_numeric($this->data[0][$bestAttr]) == false) {
+			foreach ($this->data as $line) {
+				$newLine = $line;
+				unset($newLine[$bestAttr]);
+				$subDatas[$line[$bestAttr]][] = $newLine;
+			}
+		} else {
+			$cutValue = Util::getCutValue($this->data, $bestAttr);
+			foreach ($this->data as $line) {
+				$newLine = $line;
+				unset($newLine[$bestAttr]);
+				if ($line[$bestAttr] > $cutValue) {
+					$subDatas[">"][] = $newLine;
+				} else {
+					$subDatas["<="][] = $newLine;
+				}
+
+			}
 		}
 
 		foreach ($subDatas as $attr => $subData) {
