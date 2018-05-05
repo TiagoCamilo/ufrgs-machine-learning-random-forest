@@ -46,7 +46,7 @@ class InformationGain {
 				}
 				$avgEntropy += ($sizeAttr / $sizeData) * $infoDAttr[$key];
 			}
-			echo "<br>" . $attr . " | " . $avgEntropy . "<br>";
+
 			if ($avgEntropy < $lowerEntropy) {
 				$lowerEntropy = $avgEntropy;
 				$bestAttr = $attr;

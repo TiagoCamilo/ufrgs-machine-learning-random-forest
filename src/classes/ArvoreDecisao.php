@@ -16,11 +16,11 @@ class ArvoreDecisao {
 		$labelListCounter = Util::labelCounter($this->data);
 
 		if (count($labelListCounter) == 1) {
-			return key($labelListCounter) . " Origem1";
+			return key($labelListCounter);
 		}
 
 		if (empty($this->attrList)) {
-			return Util::labelMostCommon($labelListCounter) . " Origem2";
+			return Util::labelMostCommon($labelListCounter);
 		}
 
 		$bestAttr = $this->findBestAttr();
