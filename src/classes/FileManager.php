@@ -24,37 +24,26 @@ class FileManager {
 	public function getDataAsArray() {
 		$fileAsArray = explode("\n", $this->fileData);
 
-		$i = 0;
-		$headers = array();
+		$skipedHeader = false;
 		foreach ($fileAsArray as $line) {
+
+			// Remove cursor return para nao quebrar string
+			$line = str_replace("\r", "", $line);
+
 			//Se linha é invalida (exemplo ultima linha dos arquivos)
 			if (strlen($line) == 0) {
 				continue;
 			}
 
-			// Se deve existir cabecalho e ainda nao esta definido
-			if ($this->hasHeader == true && count($headers) == 0) {
-				// Assume que primeira linha é o header
-				$headers = explode($this->delimiters, $line);
+			// Se deve existir cabecalho e ainda nao foi ignorado
+			if ($this->hasHeader == true && $skipedHeader == false) {
+				// Assume que primeira linha é o header e pula a mesma
+				$skipedHeader = true;
 				continue;
 			}
 
-			// Se nao tem header, basta retornar array naturalmente indexado
-			//if ($this->hasHeader == false) {
-			$array[$i++] = explode($this->delimiters, $line);
-			continue;
-			//}
-
-			// Se tem header e ele ja esta definido, retorna array associativo
-			$lineAsArray = explode($this->delimiters, $line);
-			foreach ($headers as $attr) {
-				// Adiciona todos atributos na mesma linha
-				$array[$i][$attr] = array_shift($lineAsArray);
-			}
-
-			// Somente apos todos attr processado, incrementa linha
-			$i++;
-
+			// Adiciona ao array naturalmente indexado
+			$array[] = explode($this->delimiters, $line);
 		}
 
 		return $array;

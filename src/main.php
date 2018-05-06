@@ -23,5 +23,5 @@ $tree->debug();
 
 foreach ($dataTest as $instancia) {
 	$classifier = new Classifier($tree, $instancia);
-	echo implode(";", $instancia) . "\t" . $classifier->execute();
+	echo "\n" . implode(";", $instancia) . "\t => \t" . $classifier->execute() . "\n";
 }
