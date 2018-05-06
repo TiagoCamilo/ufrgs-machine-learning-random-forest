@@ -31,20 +31,11 @@ class Util {
 	}
 
 	public function getCutValue($data, $attrIndex) {
-		$minValue = null;
-		$maxValue = null;
+		$somatorio = 0;
 		foreach ($data as $line) {
-			if ($line[$attrIndex] > $maxValue || $maxValue == null) {
-				$maxValue = $line[$attrIndex];
-			}
-
-			if ($line[$attrIndex] < $minValue || $minValue == null) {
-				$minValue = $line[$attrIndex];
-			}
+			$somatorio += $line[$attrIndex];
 		}
-
-		$amplitude = $maxValue - $minValue;
-		$cutValue = $maxValue - ($amplitude / 2);
+		$cutValue = $somatorio / count($data);
 
 		return $cutValue;
 	}
