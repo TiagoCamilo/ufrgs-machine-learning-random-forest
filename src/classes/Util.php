@@ -30,7 +30,7 @@ class Util {
 		return $labelBigger;
 	}
 
-	public function getCutValue($data, $attrIndex) {
+	public static function getCutValue($data, $attrIndex) {
 		$somatorio = 0;
 		foreach ($data as $line) {
 			$somatorio += $line[$attrIndex];
@@ -40,7 +40,7 @@ class Util {
 		return $cutValue;
 	}
 
-	public function getSquareAttr($attrList) {
+	public static function getSquareAttr($attrList) {
 		$square = sqrt(count($attrList));
 		shuffle($attrList);
 		$returnList = [];
@@ -48,6 +48,26 @@ class Util {
 			$returnList[] = array_shift($attrList);
 		}
 		return $returnList;
+	}
+
+	public static function arrayRecursiveDiff($aArray1, $aArray2) {
+		$aReturn = array();
+
+		foreach ($aArray1 as $mKey => $mValue) {
+			if (array_key_exists($mKey, $aArray2)) {
+				if (is_array($mValue)) {
+					$aRecursiveDiff = Util::arrayRecursiveDiff($mValue, $aArray2[$mKey]);
+					if (count($aRecursiveDiff)) {$aReturn[$mKey] = $aRecursiveDiff;}
+				} else {
+					if ($mValue != $aArray2[$mKey]) {
+						$aReturn[$mKey] = $mValue;
+					}
+				}
+			} else {
+				$aReturn[$mKey] = $mValue;
+			}
+		}
+		return $aReturn;
 	}
 
 }
