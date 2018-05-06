@@ -1,6 +1,8 @@
 <?php
 
 class Util {
+	public const FIRST_LINE = 0;
+
 	public static function labelCounter($data) {
 		$reverseLine = array_flip($data[0]);
 		$labelIndex = array_pop($reverseLine);
