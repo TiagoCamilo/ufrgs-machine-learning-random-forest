@@ -1,13 +1,17 @@
 <?php
 
-class ArvoreDecisao {
+class DecisionTree {
 	private $data;
-	private $node;
+	private $nodes;
 	private $attrList;
 
 	public function __construct($data, $attrList) {
 		$this->data = $data;
 		$this->attrList = $attrList;
+	}
+
+	public function getNodes() {
+		return $this->nodes;
 	}
 
 	public function build() {
@@ -45,13 +49,13 @@ class ArvoreDecisao {
 		}
 
 		foreach ($subDatas as $attrValue => $subData) {
-			$arvore = new ArvoreDecisao($subData, $this->attrList);
+			$tree = new DecisionTree($subData, $this->attrList);
 			$newNode = Node::createNode($bestAttr, $attrValue);
-			$newNode->nodes = $arvore->build();
-			$this->node[] = $newNode;
+			$newNode->nodes = $tree->build();
+			$this->nodes[] = $newNode;
 		}
 
-		return $this->node;
+		return $this->nodes;
 	}
 
 	private function buildContinuousNode($bestAttr) {
@@ -69,13 +73,13 @@ class ArvoreDecisao {
 		}
 
 		foreach ($subDatas as $attrValue => $subData) {
-			$arvore = new ArvoreDecisao($subData, $this->attrList);
+			$tree = new DecisionTree($subData, $this->attrList);
 			$newNode = Node::createNode($bestAttr, $cutValue, $attrValue);
-			$newNode->nodes = $arvore->build();
-			$this->node[] = $newNode;
+			$newNode->nodes = $tree->build();
+			$this->nodes[] = $newNode;
 		}
 
-		return $this->node;
+		return $this->nodes;
 
 	}
 
@@ -85,7 +89,7 @@ class ArvoreDecisao {
 	}
 
 	public function debug() {
-		foreach ($this->node as $node) {
+		foreach ($this->nodes as $node) {
 			echo "\n";
 			$this->debugNode($node);
 		}
