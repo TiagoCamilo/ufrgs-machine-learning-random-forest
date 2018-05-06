@@ -25,8 +25,16 @@ class DecisionTree {
 
 	public function getAllAttrMostCommomValues() {
 		$result = [];
-		foreach ($this->originalAttrList as $attr) {
-			$result[] = DataHelper::attrMostCommonValue($this->data, $attr);
+		foreach ($this->attrList as $attr) {
+			$result[$attr] = DataHelper::attrMostCommonValue($this->data, $attr);
+		}
+		return $result;
+	}
+
+	public function getAllAttrCounters() {
+		$result = [];
+		foreach ($this->attrList as $attr) {
+			$result[$attr] = DataHelper::attrCounter($this->data, $attr);
 		}
 		return $result;
 	}

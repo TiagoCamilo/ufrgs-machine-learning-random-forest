@@ -10,8 +10,8 @@ require_once 'classes/InformationGain.php';
 require_once 'classes/DecisionTree.php';
 require_once 'classes/Classifier.php';
 
-//$fileHandler = new FileManager('dados/dadosBenchmark_validacaoAlgoritmoAD.csv', true, ";");
-$fileHandler = new FileManager('dados/teste2.csv', true, ";");
+$fileHandler = new FileManager('dados/dadosBenchmark_validacaoAlgoritmoAD.csv', true, ";");
+//$fileHandler = new FileManager('dados/teste2.csv', true, ";");
 //$fileHandler = new FileManager('dados/pima.tsv', true, "\t");
 
 $data = $fileHandler->getDataAsArray();
@@ -24,10 +24,11 @@ $dataTest = $booststrap->getTestData();
 $tree = new DecisionTree($dataTraining, array(0, 1, 2, 3));
 $tree->build();
 $tree->debug();
+echo "\n";
+var_dump($tree->getAllAttrCounters());
+echo "\n";
 
-/*
 foreach ($dataTest as $instancia) {
-$classifier = new Classifier($tree, $instancia);
-echo "\n" . implode(";", $instancia) . "\t => \t" . $classifier->execute() . "\n";
+	$classifier = new Classifier($tree, $instancia);
+	echo "\n" . implode(";", $instancia) . "\t => \t" . $classifier->execute() . "\n";
 }
- */

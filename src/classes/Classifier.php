@@ -16,7 +16,7 @@ class Classifier {
 				return $result;
 			}
 		}
-		die("\n\nERROR: Valor NULL na predicao");
+		die("\n\nERROR: Valor NULL na predicao instancia [ " . implode(" ; ", $this->instancia) . " ]");
 	}
 
 	private function analizy($node) {
