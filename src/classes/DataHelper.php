@@ -52,7 +52,7 @@ class DataHelper {
 	}
 
 	public static function attrContinuousCounter($data, $attrIndex) {
-		$cutValue = Util::getCutValue($data, $attrIndex);
+		$cutValue = DataHelper::cutValue($data, $attrIndex);
 
 		$attrListCounter = array();
 		foreach ($data as $line) {

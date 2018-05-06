@@ -21,12 +21,10 @@ $booststrap = new Bootstrap($data);
 $dataTraining = $booststrap->getTrainingData();
 $dataTest = $booststrap->getTestData();
 
-//$tree = new DecisionTree($dataTraining, array(0, 1, 2, 3), false);
-$tree = new DecisionTree($data, array(0, 1, 2, 3), false);
+$tree = new DecisionTree($dataTraining, array(0, 1, 2, 3));
 $tree->build();
 $tree->debug();
 
-//var_dump($tree->getAllAttrMostCommom());
 /*
 foreach ($dataTest as $instancia) {
 $classifier = new Classifier($tree, $instancia);

@@ -23,6 +23,14 @@ class DecisionTree {
 		return $this->nodes;
 	}
 
+	public function getAllAttrMostCommomValues() {
+		$result = [];
+		foreach ($this->originalAttrList as $attr) {
+			$result[] = DataHelper::attrMostCommonValue($this->data, $attr);
+		}
+		return $result;
+	}
+
 	public function build() {
 
 		$labelListCounter = DataHelper::labelCounter($this->data);
