@@ -24,9 +24,6 @@ $dataTest = $booststrap->getTestData();
 $tree = new DecisionTree($dataTraining, array(0, 1, 2, 3));
 $tree->build();
 $tree->debug();
-echo "\n";
-var_dump($tree->getAllAttrCounters());
-echo "\n";
 
 foreach ($dataTest as $instancia) {
 	$classifier = new Classifier($tree, $instancia);

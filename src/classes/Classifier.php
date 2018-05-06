@@ -16,7 +16,9 @@ class Classifier {
 				return $result;
 			}
 		}
-		die("\n\nERROR: Valor NULL na predicao instancia [ " . implode(" ; ", $this->instancia) . " ]");
+
+		return $this->modelo->getLabelMostCommon() . "x";
+		//die("\n\nERROR: Valor NULL na predicao instancia [ " . implode(" ; ", $this->instancia) . " ]");
 	}
 
 	private function analizy($node) {
@@ -37,6 +39,7 @@ class Classifier {
 
 		if ($result == false) {
 			return false;
+
 		}
 
 		if (is_array($node->nodes)) {

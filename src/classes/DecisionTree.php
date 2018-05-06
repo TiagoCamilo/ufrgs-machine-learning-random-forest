@@ -7,6 +7,8 @@ class DecisionTree {
 	private $originalAttrList;
 	private $bootstrapAttr;
 
+	private $attrValuesCounter;
+
 	public function __construct($data, $attrList, $bootstrapAttr = true) {
 		$this->data = $data;
 		if ($bootstrapAttr) {
@@ -23,20 +25,8 @@ class DecisionTree {
 		return $this->nodes;
 	}
 
-	public function getAllAttrMostCommomValues() {
-		$result = [];
-		foreach ($this->attrList as $attr) {
-			$result[$attr] = DataHelper::attrMostCommonValue($this->data, $attr);
-		}
-		return $result;
-	}
-
-	public function getAllAttrCounters() {
-		$result = [];
-		foreach ($this->attrList as $attr) {
-			$result[$attr] = DataHelper::attrCounter($this->data, $attr);
-		}
-		return $result;
+	public function getLabelMostCommon() {
+		return DataHelper::labelMostCommonValue($this->data);
 	}
 
 	public function build() {
