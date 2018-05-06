@@ -10,7 +10,7 @@ class DecisionTree {
 	public function __construct($data, $attrList, $bootstrapAttr = true) {
 		$this->data = $data;
 		if ($bootstrapAttr) {
-			$this->attrList = Util::getSquareAttr($attrList);
+			$this->attrList = DataHelper::squareAttr($attrList);
 		} else {
 			$this->attrList = $attrList;
 		}
@@ -25,20 +25,20 @@ class DecisionTree {
 
 	public function build() {
 
-		$labelListCounter = Util::labelCounter($this->data);
+		$labelListCounter = DataHelper::labelCounter($this->data);
 
 		if (count($labelListCounter) == 1) {
 			return key($labelListCounter);
 		}
 
 		if (empty($this->attrList)) {
-			return Util::labelMostCommon($labelListCounter);
+			return DataHelper::labelMostCommonValue($this->data);
 		}
 
 		$bestAttr = $this->findBestAttr();
 
 		//Se nao é valor numerico(continuo)
-		if (is_numeric($this->data[Util::FIRST_LINE][$bestAttr]) == false) {
+		if (is_numeric($this->data[DataHelper::FIRST_LINE][$bestAttr]) == false) {
 			return $this->buildNominalNode($bestAttr);
 		} else {
 			return $this->buildContinuousNode($bestAttr);
@@ -67,7 +67,7 @@ class DecisionTree {
 	private function buildContinuousNode($bestAttr) {
 		$subDatas = array();
 
-		$cutValue = Util::getCutValue($this->data, $bestAttr);
+		$cutValue = DataHelper::cutValue($this->data, $bestAttr);
 		foreach ($this->data as $line) {
 			$newLine = $line;
 			if ($line[$bestAttr] > $cutValue) {
