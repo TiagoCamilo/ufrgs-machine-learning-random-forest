@@ -18,6 +18,7 @@ class FileManager {
 			$this->fileData = file_get_contents($this->fileName);
 			return true;
 		}
+		die("\n\nArquivo nao encontrado.\n\n");
 		return false;
 	}
 
@@ -25,6 +26,7 @@ class FileManager {
 		$fileAsArray = explode("\n", $this->fileData);
 
 		$skipedHeader = false;
+		$array = array();
 		foreach ($fileAsArray as $line) {
 
 			// Remove cursor return para nao quebrar string

@@ -5,11 +5,18 @@ class DecisionTree {
 	private $nodes;
 	private $attrList;
 	private $originalAttrList;
+	private $bootstrapAttr;
 
-	public function __construct($data, $attrList) {
+	public function __construct($data, $attrList, $bootstrapAttr = true) {
 		$this->data = $data;
-		$this->attrList = Util::getSquareAttr($attrList);
+		if ($bootstrapAttr) {
+			$this->attrList = Util::getSquareAttr($attrList);
+		} else {
+			$this->attrList = $attrList;
+		}
+
 		$this->originalAttrList = $attrList;
+		$this->bootstrapAttr = $bootstrapAttr;
 	}
 
 	public function getNodes() {
@@ -48,7 +55,7 @@ class DecisionTree {
 		}
 
 		foreach ($subDatas as $attrValue => $subData) {
-			$tree = new DecisionTree($subData, $this->originalAttrList);
+			$tree = new DecisionTree($subData, $this->originalAttrList, $this->bootstrapAttr);
 			$newNode = Node::createNode($bestAttr, $attrValue);
 			$newNode->nodes = $tree->build();
 			$this->nodes[] = $newNode;
@@ -71,7 +78,7 @@ class DecisionTree {
 		}
 
 		foreach ($subDatas as $attrValue => $subData) {
-			$tree = new DecisionTree($subData, $this->originalAttrList);
+			$tree = new DecisionTree($subData, $this->originalAttrList, $this->bootstrapAttr);
 			$newNode = Node::createNode($bestAttr, $cutValue, $attrValue);
 			$newNode->nodes = $tree->build();
 			$this->nodes[] = $newNode;

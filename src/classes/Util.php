@@ -3,6 +3,21 @@
 class Util {
 	public const FIRST_LINE = 0;
 
+	public static function attrNominalCounter($data, $attrIndex) {
+		$reverseLine = array_flip($data[0]);
+		$labelIndex = array_pop($reverseLine);
+
+		$labelListCounter = array();
+		foreach ($data as $line) {
+			if (isset($labelListCounter[$line[$attrIndex]][$line[$labelIndex]]) == false) {
+				$labelListCounter[$line[$attrIndex]][$line[$labelIndex]] = 1;
+				continue;
+			}
+			$labelListCounter[$line[$attrIndex]][$line[$labelIndex]] += 1;
+		}
+		return $labelListCounter;
+	}
+
 	public static function labelCounter($data) {
 		$reverseLine = array_flip($data[0]);
 		$labelIndex = array_pop($reverseLine);
