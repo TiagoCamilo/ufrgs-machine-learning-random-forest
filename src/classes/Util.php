@@ -40,4 +40,9 @@ class Util {
 		return $cutValue;
 	}
 
+	public function getSquareAttr($attrList) {
+		$square = sqrt(count($attrList));
+		return array_rand($attrList, $square);
+	}
+
 }

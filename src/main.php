@@ -6,11 +6,12 @@ require_once 'classes/InformationGain.php';
 require_once 'classes/DecisionTree.php';
 require_once 'classes/Classifier.php';
 
-$fileHandler = new FileManager('dados/dadosBenchmark_validacaoAlgoritmoAD.csv', true, ";");
-//$fileHandler = new FileManager('dados/teste2.csv', true, ";");
+//$fileHandler = new FileManager('dados/dadosBenchmark_validacaoAlgoritmoAD.csv', true, ";");
+$fileHandler = new FileManager('dados/teste2.csv', true, ";");
 
 $data = $fileHandler->getDataAsArray();
 echo '<pre>';
+
 $tree = new DecisionTree($data, array(0, 1, 2, 3));
 $tree->build();
 $tree->debug();

@@ -15,9 +15,10 @@ class InformationGain {
 
 		$sizeData = count($this->data);
 		$infoD = 0;
-		foreach ($labelListCounter as $counter) {
-			$infoD -= (($counter / $sizeData) * log(($counter / $sizeData), 2));
 
+		foreach ($labelListCounter as $counter) {
+
+			$infoD -= (($counter / $sizeData) * log(($counter / $sizeData), 2));
 		}
 
 		$infoDAttr = array();
@@ -52,7 +53,11 @@ class InformationGain {
 				$bestAttr = $attr;
 			}
 
+			$diff = $infoD - $avgEntropy;
+			//echo "\n" . $attr . "\t" . $infoD . "\t" . $avgEntropy . "\t" . $diff;
+
 		}
+		//echo "\n --- \n";
 
 		return $bestAttr;
 	}

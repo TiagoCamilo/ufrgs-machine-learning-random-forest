@@ -4,10 +4,12 @@ class DecisionTree {
 	private $data;
 	private $nodes;
 	private $attrList;
+	private $originalAttrList;
 
 	public function __construct($data, $attrList) {
 		$this->data = $data;
-		$this->attrList = $attrList;
+		$this->attrList = Util::getSquareAttr($attrList);
+		$this->originalAttrList = $attrList;
 	}
 
 	public function getNodes() {
@@ -28,7 +30,7 @@ class DecisionTree {
 
 		$bestAttr = $this->findBestAttr();
 
-		$this->attrList = array_diff($this->attrList, [$bestAttr]);
+		//$this->attrList = array_diff($this->attrList, [$bestAttr]);
 
 		//Se nao é valor numerico(continuo)
 		if (is_numeric($this->data[Util::FIRST_LINE][$bestAttr]) == false) {
@@ -44,12 +46,12 @@ class DecisionTree {
 
 		foreach ($this->data as $line) {
 			$newLine = $line;
-			unset($newLine[$bestAttr]);
+			//unset($newLine[$bestAttr]);
 			$subDatas[$line[$bestAttr]][] = $newLine;
 		}
 
 		foreach ($subDatas as $attrValue => $subData) {
-			$tree = new DecisionTree($subData, $this->attrList);
+			$tree = new DecisionTree($subData, $this->originalAttrList);
 			$newNode = Node::createNode($bestAttr, $attrValue);
 			$newNode->nodes = $tree->build();
 			$this->nodes[] = $newNode;
@@ -64,7 +66,7 @@ class DecisionTree {
 		$cutValue = Util::getCutValue($this->data, $bestAttr);
 		foreach ($this->data as $line) {
 			$newLine = $line;
-			unset($newLine[$bestAttr]);
+			//unset($newLine[$bestAttr]);
 			if ($line[$bestAttr] > $cutValue) {
 				$subDatas[">"][] = $newLine;
 			} else {
@@ -73,7 +75,7 @@ class DecisionTree {
 		}
 
 		foreach ($subDatas as $attrValue => $subData) {
-			$tree = new DecisionTree($subData, $this->attrList);
+			$tree = new DecisionTree($subData, $this->originalAttrList);
 			$newNode = Node::createNode($bestAttr, $cutValue, $attrValue);
 			$newNode->nodes = $tree->build();
 			$this->nodes[] = $newNode;
