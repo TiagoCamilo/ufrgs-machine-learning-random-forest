@@ -54,10 +54,8 @@ class InformationGain {
 			}
 
 			$diff = $infoD - $avgEntropy;
-			//echo "\n" . $attr . "\t" . $infoD . "\t" . $avgEntropy . "\t" . $diff;
 
 		}
-		//echo "\n --- \n";
 
 		return $bestAttr;
 	}

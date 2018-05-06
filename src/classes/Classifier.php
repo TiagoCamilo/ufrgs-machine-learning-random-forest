@@ -16,6 +16,7 @@ class Classifier {
 				return $result;
 			}
 		}
+		die('ERROR: Valor NULL na predicao');
 	}
 
 	private function analizy($node) {
@@ -33,7 +34,6 @@ class Classifier {
 		default:
 			$result = false;
 		}
-		//echo "\n" . $this->instancia[$node->attr] . " " . $node->operator . " " . $node->value . " \tResult:" . $result . "\n";
 
 		if ($result == false) {
 			return false;

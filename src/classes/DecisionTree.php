@@ -30,8 +30,6 @@ class DecisionTree {
 
 		$bestAttr = $this->findBestAttr();
 
-		//$this->attrList = array_diff($this->attrList, [$bestAttr]);
-
 		//Se nao é valor numerico(continuo)
 		if (is_numeric($this->data[Util::FIRST_LINE][$bestAttr]) == false) {
 			return $this->buildNominalNode($bestAttr);
@@ -46,7 +44,6 @@ class DecisionTree {
 
 		foreach ($this->data as $line) {
 			$newLine = $line;
-			//unset($newLine[$bestAttr]);
 			$subDatas[$line[$bestAttr]][] = $newLine;
 		}
 
@@ -66,7 +63,6 @@ class DecisionTree {
 		$cutValue = Util::getCutValue($this->data, $bestAttr);
 		foreach ($this->data as $line) {
 			$newLine = $line;
-			//unset($newLine[$bestAttr]);
 			if ($line[$bestAttr] > $cutValue) {
 				$subDatas[">"][] = $newLine;
 			} else {
