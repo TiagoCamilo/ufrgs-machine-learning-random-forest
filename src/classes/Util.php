@@ -42,7 +42,12 @@ class Util {
 
 	public function getSquareAttr($attrList) {
 		$square = sqrt(count($attrList));
-		return array_rand($attrList, $square);
+		shuffle($attrList);
+		$returnList = [];
+		for ($i = 0; $i <= $square; $i++) {
+			$returnList[] = array_shift($attrList);
+		}
+		return $returnList;
 	}
 
 }
