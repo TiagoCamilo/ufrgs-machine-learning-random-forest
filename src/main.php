@@ -14,6 +14,40 @@ $fileHandler = new FileManager('dados/dadosBenchmark_validacaoAlgoritmoAD.csv', 
 //$fileHandler = new FileManager('dados/teste2.csv', true, ";");
 //$fileHandler = new FileManager('dados/pima.tsv', true, "\t");
 
+//Carol
+//
+echo '<pre>';
+$data = $fileHandler->getDataAsArray();
+$indexLabel = count($data[0]) - 1;
+
+foreach ($data as $key => $value) {
+	$classifica[$value[$indexLabel]][] = $value;
+}
+
+function kFolds($classifica, $nFolds) {
+	$i = 0;
+	$j = 0;
+
+	foreach ($classifica as $key => $value) {
+		foreach ($value as $teste) {
+			$fold[$i][$j] = $teste;
+			echo "<br>Posição[" . $i . "][" . $j . "]";
+			if ($i == $nFolds - 1) {
+				$i = 0;
+				$j++;
+			} else {
+				$i++;
+			}
+		}
+	}
+	var_dump($fold);
+	return 0;
+}
+
+$teste = kFolds($classifica, 10);
+
+//fim Carol
+
 $data = $fileHandler->getDataAsArray();
 echo '<pre>';
 
