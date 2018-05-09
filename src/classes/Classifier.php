@@ -12,7 +12,7 @@ class Classifier {
 	public function execute() {
 		foreach ($this->modelo->getNodes() as $node) {
 			$result = $this->analizy($node);
-			if ($result != false) {
+			if ($result !== false) {
 				return $result;
 			}
 		}
@@ -37,7 +37,7 @@ class Classifier {
 			$result = false;
 		}
 
-		if ($result == false) {
+		if ($result === false) {
 			return false;
 
 		}
@@ -45,7 +45,7 @@ class Classifier {
 		if (is_array($node->nodes)) {
 			foreach ($node->nodes as $childNode) {
 				$result = $this->analizy($childNode);
-				if ($result != false) {
+				if ($result !== false) {
 					return $result;
 				}
 			}

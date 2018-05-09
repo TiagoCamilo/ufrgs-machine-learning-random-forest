@@ -10,9 +10,9 @@ require_once 'classes/InformationGain.php';
 require_once 'classes/DecisionTree.php';
 require_once 'classes/Classifier.php';
 
-$fileHandler = new FileManager('dados/dadosBenchmark_validacaoAlgoritmoAD.csv', true, ";");
+//$fileHandler = new FileManager('dados/dadosBenchmark_validacaoAlgoritmoAD.csv', true, ";");
 //$fileHandler = new FileManager('dados/teste2.csv', true, ";");
-//$fileHandler = new FileManager('dados/pima.tsv', true, "\t");
+$fileHandler = new FileManager('dados/pima2.tsv', true, "\t");
 
 //Carol
 //

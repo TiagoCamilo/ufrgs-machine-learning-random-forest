@@ -21,7 +21,7 @@ class DataHelper {
 	}
 
 	public static function attrMostCommonValue($data, $attrIndex) {
-		$attrCounter = DataHelper::attrCounter($data, $attrIndex);
+		$attrCounter = DataHelper::labelCounter($data, $attrIndex);
 
 		$valueMostCommon = 0;
 		$maxValue = 0;
