@@ -9,13 +9,13 @@ require_once 'classes/Node.php';
 require_once 'classes/InformationGain.php';
 require_once 'classes/DecisionTree.php';
 require_once 'classes/Classifier.php';
+$memoryBegin = memory_get_usage();
+echo "<br>" . $memoryBegin / 1024;
 
-//$fileHandler = new FileManager('dados/dadosBenchmark_validacaoAlgoritmoAD.csv', true, ";");
+$fileHandler = new FileManager('dados/dadosBenchmark_validacaoAlgoritmoAD.csv', true, ";");
 //$fileHandler = new FileManager('dados/teste2.csv', true, ";");
-$fileHandler = new FileManager('dados/pima2.tsv', true, "\t");
+//$fileHandler = new FileManager('dados/pima.tsv', true, "\t");
 
-//Carol
-//
 echo '<pre>';
 $data = $fileHandler->getDataAsArray();
 $indexLabel = count($data[0]) - 1;
@@ -50,9 +50,11 @@ $dataTest = $booststrap->getTestData();
 
 $tree = new DecisionTree($dataTraining, array(0, 1, 2, 3));
 $tree->build();
-$tree->debug();
+//$tree->debug();
 
 foreach ($dataTest as $instancia) {
 	$classifier = new Classifier($tree, $instancia);
-	echo "\n" . implode(";", $instancia) . "\t => \t" . $classifier->execute() . "\n";
+	//echo "\n" . implode(";", $instancia) . "\t => \t" . $classifier->execute() . "\n";
 }
+
+printMemoryState($memoryBegin);

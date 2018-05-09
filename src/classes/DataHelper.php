@@ -123,3 +123,12 @@ class DataHelper {
 	}
 
 }
+
+function printMemoryState($memoryBegin = null) {
+	$memoryEnd = memory_get_usage();
+	echo "<br>----------------<br>";
+	echo "<br>" . ($memoryEnd / 1024) . " KB";
+	if ($memoryBegin) {
+		echo "<br>" . (($memoryEnd - $memoryBegin) / 1024) . " KB";
+	}
+}

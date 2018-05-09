@@ -10,6 +10,8 @@ class DecisionTree {
 	private $attrValuesCounter;
 
 	public function __construct($data, $attrList, $bootstrapAttr = true) {
+		printMemoryState();
+
 		$this->data = $data;
 		if ($bootstrapAttr) {
 			$this->attrList = DataHelper::squareAttr($attrList);
