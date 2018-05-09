@@ -21,32 +21,25 @@ $data = $fileHandler->getDataAsArray();
 $indexLabel = count($data[0]) - 1;
 
 foreach ($data as $key => $value) {
-	$classifica[$value[$indexLabel]][] = $value;
+	$listByLabel[$value[$indexLabel]][] = $value;
 }
 
-function kFolds($classifica, $nFolds) {
-	$i = 0;
-	$j = 0;
+function kFolds($listByLabel, $nFolds) {
 
-	foreach ($classifica as $key => $value) {
-		foreach ($value as $teste) {
-			$fold[$i][$j] = $teste;
-			echo "<br>Posição[" . $i . "][" . $j . "]";
-			if ($i == $nFolds - 1) {
+	$i = 0;
+	foreach ($listByLabel as $label => $subData) {
+		foreach ($subData as $line) {
+			$folds[$i][] = $line;
+			$i++;
+			if ($i == $nFolds) {
 				$i = 0;
-				$j++;
-			} else {
-				$i++;
 			}
 		}
 	}
-	var_dump($fold);
-	return 0;
+	return $folds;
 }
 
-$teste = kFolds($classifica, 10);
-
-//fim Carol
+$folds = kFolds($listByLabel, 10);
 
 $data = $fileHandler->getDataAsArray();
 echo '<pre>';
