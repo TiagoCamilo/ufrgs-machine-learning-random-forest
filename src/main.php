@@ -9,45 +9,42 @@ require_once 'classes/Node.php';
 require_once 'classes/InformationGain.php';
 require_once 'classes/DecisionTree.php';
 require_once 'classes/Classifier.php';
+require_once 'classes/Kfold.php';
 
-$fileHandler = new FileManager('dados/dadosBenchmark_validacaoAlgoritmoAD.csv', true, ";");
+//$fileHandler = new FileManager('dados/dadosBenchmark_validacaoAlgoritmoAD.csv', true, ";");
 //$fileHandler = new FileManager('dados/teste2.csv', true, ";");
-//$fileHandler = new FileManager('dados/pima.tsv', true, "\t");
+$fileHandler = new FileManager('dados/pima.tsv', true, "\t");
 
 echo '<pre>';
 $data = $fileHandler->getDataAsArray();
-$indexLabel = count($data[0]) - 1;
 
-foreach ($data as $key => $value) {
-	$listByLabel[$value[$indexLabel]][] = $value;
-}
+$folds = new Kfold($data, 10);
 
-function kFolds($listByLabel, $nFolds) {
+foreach ($folds->getFolds() as $fold) {
 
-	$i = 0;
-	foreach ($listByLabel as $label => $subData) {
-		foreach ($subData as $line) {
-			$folds[$i][] = $line;
-			$i++;
-			if ($i == $nFolds) {
-				$i = 0;
-			}
+	$booststrap = new Bootstrap($fold);
+	$dataTraining = $booststrap->getTrainingData();
+	$dataTest = $booststrap->getTestData();
+
+	$tree = new DecisionTree($dataTraining, range(0, count($data[0]) - 2));
+	$tree->build();
+	$tree->debug();
+
+	foreach ($dataTest as $instancia) {
+		$classifier = new Classifier($tree, $instancia);
+		$result = $classifier->execute();
+		echo "\n" . implode(";", $instancia) . "\t => \t" . $result . "\n";
+		if ($instancia[count($instancia) - 1] == $result) {
+			@$certos++;
+		} else {
+			@$errados++;
 		}
+
 	}
-	return $folds;
+	echo "\nFold - Certo:" . $certos;
+	echo "\nFold - Errado:" . $errados;
 }
-
-$folds = kFolds($listByLabel, 10);
-
-$booststrap = new Bootstrap($data);
-$dataTraining = $booststrap->getTrainingData();
-$dataTest = $booststrap->getTestData();
-
-$tree = new DecisionTree($dataTraining, range(0, count($data[0]) - 2));
-$tree->build();
-$tree->debug();
-
-foreach ($dataTest as $instancia) {
-	$classifier = new Classifier($tree, $instancia);
-	echo "\n" . implode(";", $instancia) . "\t => \t" . $classifier->execute() . "\n";
-}
+echo "\n--------------------\n";
+echo "\nTotal - Certo:" . $certos;
+echo "\nTotal - Errado:" . $errados;
+echo "\nTotal - Geral:" . ($certos + $errados);
