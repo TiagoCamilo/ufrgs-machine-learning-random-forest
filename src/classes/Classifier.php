@@ -10,14 +10,23 @@ class Classifier {
 	}
 
 	public function execute() {
-		foreach ($this->modelo->getNodes() as $node) {
+		foreach ($this->modelo->getTreeList() as $tree) {
+			@$result[$this->executeTree($tree)]++;
+		}
+		$maxs = array_keys($result, max($result));
+
+		return $maxs[0];
+	}
+
+	public function executeTree($tree) {
+		foreach ($tree->getNodes() as $node) {
 			$result = $this->analizy($node);
 			if ($result !== false) {
 				return $result;
 			}
 		}
 
-		return $this->modelo->getLabelMostCommon() . "x";
+		return $tree->getLabelMostCommon();
 		//die("\n\nERROR: Valor NULL na predicao instancia [ " . implode(" ; ", $this->instancia) . " ]");
 	}
 

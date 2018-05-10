@@ -10,11 +10,15 @@ require_once 'classes/InformationGain.php';
 require_once 'classes/DecisionTree.php';
 require_once 'classes/Classifier.php';
 require_once 'classes/Kfold.php';
+require_once 'classes/RandomForest.php';
 
 $foldsNumber = 10;
+$treeNumber = 15;
+$positiveValue = 'g';
 //$fileHandler = new FileManager('dados/dadosBenchmark_validacaoAlgoritmoAD.csv', true, ";");
 //$fileHandler = new FileManager('dados/teste2.csv', true, ";");
-$fileHandler = new FileManager('dados/pima.tsv', true, "\t");
+//$fileHandler = new FileManager('dados/pima.tsv', true, "\t");
+$fileHandler = new FileManager('dados/ionosphere.data', false, ",");
 
 echo '<pre>';
 $data = $fileHandler->getDataAsArray();
@@ -22,7 +26,11 @@ $data = $fileHandler->getDataAsArray();
 $folds = new Kfold($data, $foldsNumber);
 $foldsList = $folds->getFolds();
 
-for ($testFold = 0; $testFold <= $foldsNumber; $testFold++) {
+$randomForest = new RandomForest();
+
+for ($testFold = 0; $testFold < $foldsNumber; $testFold++) {
+
+	$trainingFold = [];
 
 	foreach ($foldsList as $foldIndex => $fold) {
 
@@ -30,21 +38,28 @@ for ($testFold = 0; $testFold <= $foldsNumber; $testFold++) {
 			continue;
 		}
 
-		$booststrap = new Bootstrap($fold);
+		$trainingFold = array_merge($trainingFold, $fold);
+
+	} //Fim da analise dos folds
+
+	for ($i = 0; $i < $treeNumber; $i++) {
+		$booststrap = new Bootstrap($trainingFold);
 		$dataTraining = $booststrap->getTrainingData();
-		$dataTest = $booststrap->getTestData();
 
 		$tree = new DecisionTree($dataTraining, range(0, count($data[0]) - 2));
 		$tree->build();
-		$tree->debug();
-	} //Fim Treinamento
+		//$tree->debug();
+
+		$randomForest->addTree($tree);
+	} //Fim Etapa Treinamento | Floresta pronta
 
 	foreach ($foldsList[$testFold] as $instancia) {
-		$classifier = new Classifier($tree, $instancia);
+		$classifier = new Classifier($randomForest, $instancia);
 		$result = $classifier->execute();
-		echo "\n" . implode(";", $instancia) . "\t => \t" . $result . "\n";
+
+		echo "\n" . implode(";", $instancia) . "=>" . $result . "\n";
 		if ($instancia[count($instancia) - 1] == $result) {
-			if ($result == 1) {
+			if ($result == $positiveValue) {
 				@$truePositive++;
 			} else {
 				@$trueNegative++;
@@ -52,14 +67,14 @@ for ($testFold = 0; $testFold <= $foldsNumber; $testFold++) {
 			}
 			@$certos++;
 		} else {
-			if ($result == 1) {
+			if ($result == $positiveValue) {
 				@$falsePositive++;
 			} else {
 				@$falseNegative++;
 			}
 			@$errados++;
 		}
-	} //Fim Testes
+	} //Fim Etapa Testes
 
 } // Fim Folds
 
