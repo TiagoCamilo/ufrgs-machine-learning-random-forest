@@ -11,6 +11,7 @@ require_once 'classes/DecisionTree.php';
 require_once 'classes/Classifier.php';
 require_once 'classes/Kfold.php';
 require_once 'classes/RandomForest.php';
+require_once 'classes/FMeasure.php';
 
 $foldsNumber = 10;
 $treeNumber = 15;
@@ -26,6 +27,7 @@ $data = $fileHandler->getDataAsArray();
 $folds = new Kfold($data, $foldsNumber);
 $foldsList = $folds->getFolds();
 
+$measure = new FMeasure();
 $randomForest = new RandomForest();
 
 for ($testFold = 0; $testFold < $foldsNumber; $testFold++) {
@@ -58,42 +60,40 @@ for ($testFold = 0; $testFold < $foldsNumber; $testFold++) {
 		$result = $classifier->execute();
 
 		echo "\n" . implode(";", $instancia) . "=>" . $result . "\n";
-		if ($instancia[count($instancia) - 1] == $result) {
-			if ($result == $positiveValue) {
-				@$truePositive++;
-			} else {
-				@$trueNegative++;
+		/*
+			if ($instancia[count($instancia) - 1] == $result) {
+				if ($result == $positiveValue) {
+					@$truePositive++;
+				} else {
+					@$trueNegative++;
 
-			}
-			@$certos++;
-		} else {
-			if ($result == $positiveValue) {
-				@$falsePositive++;
+				}
+				@$certos++;
 			} else {
-				@$falseNegative++;
-			}
-			@$errados++;
-		}
+				if ($result == $positiveValue) {
+					@$falsePositive++;
+				} else {
+					@$falseNegative++;
+				}
+				@$errados++;
+		*/
+		$measure->compute($instancia, $result, $positiveValue);
 	} //Fim Etapa Testes
 
 } // Fim Folds
 
-$rev = $truePositive / ($truePositive + $falseNegative);
-$prec = $truePositive / ($truePositive + $falsePositive);
+$rev = $measure->getTruePositive() / ($measure->getTruePositive() + $measure->getFalseNegative());
+$prec = $measure->getTruePositive() / ($measure->getTruePositive() + $measure->getFalsePositive());
 
 $fMeasure = (2 * ($prec * $rev)) / ($prec + $rev);
 echo "\n--------------------\n";
-echo "\nTotal - Certo:" . $certos;
-echo "\nTotal - Errado:" . $errados;
-echo "\n--------------------\n";
-echo "\nVerdadeiros Positivos:" . $truePositive;
-echo "\nVerdadeiros Negativos:" . $trueNegative;
-echo "\nFalsos Positivos:" . $falsePositive;
-echo "\nFalsos Negativos:" . $falseNegative;
+
+echo "\nVerdadeiros Positivos:" . $measure->getTruePositive();
+echo "\nVerdadeiros Negativos:" . $measure->getTrueNegative();
+echo "\nFalsos Positivos:" . $measure->getFalsePositive();
+echo "\nFalsos Negativos:" . $measure->getFalseNegative();
 echo "\n--------------------\n";
 echo "\nReccal:" . $rev;
 echo "\nPrecisão:" . $prec;
 
 echo "\nF-Measure:" . $fMeasure;
-echo "\n--------------------\n";
-echo "\nTotal - Geral:" . ($certos + $errados);
