@@ -15,11 +15,11 @@ require_once 'classes/FMeasure.php';
 
 $foldsNumber = 10;
 $treeNumber = 15;
-$positiveValue = 'g';
+$positiveValue = 1;
 //$fileHandler = new FileManager('dados/dadosBenchmark_validacaoAlgoritmoAD.csv', true, ";");
 //$fileHandler = new FileManager('dados/teste2.csv', true, ";");
-//$fileHandler = new FileManager('dados/pima.tsv', true, "\t");
-$fileHandler = new FileManager('dados/ionosphere.data', false, ",");
+$fileHandler = new FileManager('dados/pima.tsv', true, "\t");
+//$fileHandler = new FileManager('dados/ionosphere.data', false, ",");
 
 echo '<pre>';
 $data = $fileHandler->getDataAsArray();
@@ -60,40 +60,19 @@ for ($testFold = 0; $testFold < $foldsNumber; $testFold++) {
 		$result = $classifier->execute();
 
 		echo "\n" . implode(";", $instancia) . "=>" . $result . "\n";
-		/*
-			if ($instancia[count($instancia) - 1] == $result) {
-				if ($result == $positiveValue) {
-					@$truePositive++;
-				} else {
-					@$trueNegative++;
 
-				}
-				@$certos++;
-			} else {
-				if ($result == $positiveValue) {
-					@$falsePositive++;
-				} else {
-					@$falseNegative++;
-				}
-				@$errados++;
-		*/
 		$measure->compute($instancia, $result, $positiveValue);
 	} //Fim Etapa Testes
 
 } // Fim Folds
 
-$rev = $measure->getTruePositive() / ($measure->getTruePositive() + $measure->getFalseNegative());
-$prec = $measure->getTruePositive() / ($measure->getTruePositive() + $measure->getFalsePositive());
+$fMeasure = $measure->calcMeasure();
 
-$fMeasure = (2 * ($prec * $rev)) / ($prec + $rev);
 echo "\n--------------------\n";
 
 echo "\nVerdadeiros Positivos:" . $measure->getTruePositive();
 echo "\nVerdadeiros Negativos:" . $measure->getTrueNegative();
 echo "\nFalsos Positivos:" . $measure->getFalsePositive();
 echo "\nFalsos Negativos:" . $measure->getFalseNegative();
-echo "\n--------------------\n";
-echo "\nReccal:" . $rev;
-echo "\nPrecisão:" . $prec;
 
 echo "\nF-Measure:" . $fMeasure;

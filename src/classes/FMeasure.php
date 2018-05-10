@@ -7,6 +7,8 @@ class FMeasure {
 	private $falsePositive;
 	private $falseNegative;
 	private $F1Measure;
+	private $rev;
+	private $prec;
 
 	public function __construct() {
 
@@ -15,6 +17,8 @@ class FMeasure {
 		$this->falsePositive = 0;
 		$this->falseNegative = 0;
 		$this->F1Measure = 0;
+		$this->rev = 0;
+		$this->prec = 0;
 
 	}
 
@@ -49,7 +53,12 @@ class FMeasure {
 		}
 	}
 
-	public function meansure() {
+	public function calcMeasure() {
+		$this->rev = $this->truePositive / ($this->truePositive + $this->falseNegative);
+		$this->prec = $this->truePositive / ($this->truePositive + $this->falsePositive);
+
+		$this->f1Measure = (2 * ($this->prec * $this->rev)) / ($this->prec + $this->rev);
+		return $this->f1Measure;
 		//retornar valor do calculo do meansure
 	}
 }
