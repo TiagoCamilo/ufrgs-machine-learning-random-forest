@@ -15,10 +15,11 @@ require_once 'classes/FMeasure.php';
 
 $foldsNumber = 10;
 $treeNumber = 15;
-$positiveValue = 1;
+$positiveValue = 'g';
 //$fileHandler = new FileManager('dados/dadosBenchmark_validacaoAlgoritmoAD.csv', true, ";");
 //$fileHandler = new FileManager('dados/teste2.csv', true, ";");
 $fileHandler = new FileManager('dados/pima.tsv', true, "\t");
+//$fileHandler = new FileManager('dados/wine3.data', false, "\t");
 //$fileHandler = new FileManager('dados/ionosphere.data', false, ",");
 
 echo '<pre>';
@@ -28,6 +29,7 @@ $folds = new Kfold($data, $foldsNumber);
 $foldsList = $folds->getFolds();
 
 $measure = new FMeasure();
+
 $randomForest = new RandomForest();
 
 for ($testFold = 0; $testFold < $foldsNumber; $testFold++) {

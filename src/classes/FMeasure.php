@@ -48,17 +48,32 @@ class FMeasure {
 			if ($result == $positiveValue) {
 				$this->falsePositive++;
 			} else {
-				$this->$falseNegative++;
+				$this->falseNegative++;
 			}
 		}
 	}
 
 	public function calcMeasure() {
-		$this->rev = $this->truePositive / ($this->truePositive + $this->falseNegative);
-		$this->prec = $this->truePositive / ($this->truePositive + $this->falsePositive);
+		if (($this->truePositive + $this->falseNegative) === 0) {
+			$this->rev = $this->truePositive;
+		} else {
+			$this->rev = $this->truePositive / ($this->truePositive + $this->falseNegative);
 
-		$this->f1Measure = (2 * ($this->prec * $this->rev)) / ($this->prec + $this->rev);
+		}
+		if (($this->truePositive + $this->falsePositive) === 0) {
+			$this->prec = $this->truePositive;
+
+		} else {
+			$this->prec = $this->truePositive / ($this->truePositive + $this->falsePositive);
+		}
+		if (($this->prec + $this->rev) === 0) {
+			$this->f1Measure = (2 * ($this->prec * $this->rev));
+
+		} else {
+			$this->f1Measure = (2 * ($this->prec * $this->rev)) / ($this->prec + $this->rev);
+		}
+
 		return $this->f1Measure;
-		//retornar valor do calculo do meansure
+
 	}
 }
