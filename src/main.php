@@ -15,11 +15,11 @@ require_once 'classes/FMeasure.php';
 
 $foldsNumber = 10;
 $treeNumber = 15;
-$positiveValue = 'g';
+$positiveValue = '1';
+
 //$fileHandler = new FileManager('dados/dadosBenchmark_validacaoAlgoritmoAD.csv', true, ";");
-//$fileHandler = new FileManager('dados/teste2.csv', true, ";");
-$fileHandler = new FileManager('dados/pima.tsv', true, "\t");
-//$fileHandler = new FileManager('dados/wine3.data', false, "\t");
+//$fileHandler = new FileManager('dados/pima.tsv', true, "\t");
+$fileHandler = new FileManager('dados/wine.data', false, ",", 0);
 //$fileHandler = new FileManager('dados/ionosphere.data', false, ",");
 
 echo '<pre>';
@@ -44,7 +44,7 @@ for ($testFold = 0; $testFold < $foldsNumber; $testFold++) {
 
 		$trainingFold = array_merge($trainingFold, $fold);
 
-	} //Fim da analise dos folds
+	} //Fim da concatenacao dos n-1 folds
 
 	for ($i = 0; $i < $treeNumber; $i++) {
 		$booststrap = new Bootstrap($trainingFold);
@@ -68,8 +68,6 @@ for ($testFold = 0; $testFold < $foldsNumber; $testFold++) {
 
 } // Fim Folds
 
-$fMeasure = $measure->calcMeasure();
-
 echo "\n--------------------\n";
 
 echo "\nVerdadeiros Positivos:" . $measure->getTruePositive();
@@ -77,4 +75,4 @@ echo "\nVerdadeiros Negativos:" . $measure->getTrueNegative();
 echo "\nFalsos Positivos:" . $measure->getFalsePositive();
 echo "\nFalsos Negativos:" . $measure->getFalseNegative();
 
-echo "\nF-Measure:" . $fMeasure;
+echo "\nF-Measure:" . $measure->calcMeasure();

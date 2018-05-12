@@ -5,12 +5,14 @@ class FileManager {
 	private $fileData;
 	private $hasHeader;
 	private $delimiters;
+	private $labelColumn;
 
-	public function __construct($fileName, $hasHeader = false, $delimiters = ';') {
+	public function __construct($fileName, $hasHeader = false, $delimiters = ';', $labelColumn = null) {
 		$this->fileName = $fileName;
 		$this->hasHeader = $hasHeader;
-		$this->loadData();
 		$this->delimiters = $delimiters;
+		$this->labelColumn = $labelColumn;
+		$this->loadData();
 	}
 
 	public function loadData() {
@@ -19,7 +21,6 @@ class FileManager {
 			return true;
 		}
 		die("\n\nArquivo nao encontrado.\n\n");
-		return false;
 	}
 
 	public function getDataAsArray() {
@@ -44,8 +45,19 @@ class FileManager {
 				continue;
 			}
 
+			// Cria vetor atributos da linha
+			$lineAttrs = explode($this->delimiters, $line);
+
+			// Se a coluna label foi explicitamente definida
+			// Garante que o valor esteja na ultima coluna atraves de swap
+			if ($this->labelColumn !== null) {
+				$aux = $lineAttrs[count($lineAttrs) - 1];
+				$lineAttrs[count($lineAttrs) - 1] = $lineAttrs[$this->labelColumn];
+				$lineAttrs[$this->labelColumn] = $aux;
+			}
+
 			// Adiciona ao array naturalmente indexado
-			$array[] = explode($this->delimiters, $line);
+			$array[] = $lineAttrs;
 		}
 
 		return $array;
