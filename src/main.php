@@ -1,36 +1,20 @@
 <?php
-//ini_set('memory_limit', '4096M');
-ini_set('display_errors', 1);
+// setup.php
+// Codigo executado para tratamento de parametros command line e configuracao de variveis de ambiente
+// Configuracao da variavel parameters que esta sendo utilizada na execucao
+require_once 'setup.php';
 
-require_once 'classes/DataHelper.php';
-require_once 'classes/FileManager.php';
-require_once 'classes/Bootstrap.php';
-require_once 'classes/Node.php';
-require_once 'classes/InformationGain.php';
-require_once 'classes/DecisionTree.php';
-require_once 'classes/Classifier.php';
-require_once 'classes/Kfold.php';
-require_once 'classes/RandomForest.php';
-require_once 'classes/FMeasure.php';
+@$fileHandler = new FileManager($parameters['fileName'], $parameters['hasHeader'], $parameters['delimiters'], $parameters['labelColumn']);
 
-$foldsNumber = 10;
-$treeNumber = 15;
-$positiveValue = '1';
-
-//$fileHandler = new FileManager('dados/dadosBenchmark_validacaoAlgoritmoAD.csv', true, ";");
-//$fileHandler = new FileManager('dados/pima.tsv', true, "\t");
-$fileHandler = new FileManager('dados/wine.data', false, ",", 0);
-//$fileHandler = new FileManager('dados/ionosphere.data', false, ",");
-
-echo '<pre>';
 $data = $fileHandler->getDataAsArray();
 
+$foldsNumber = 10; // Valor fixo, mais utilizado normalmente
 $folds = new Kfold($data, $foldsNumber);
 $foldsList = $folds->getFolds();
 
-$measure = new FMeasure();
-
 $randomForest = new RandomForest();
+$measure = new FMeasure();
+$positiveValue = $parameters['positiveValue'];
 
 for ($testFold = 0; $testFold < $foldsNumber; $testFold++) {
 
@@ -52,7 +36,7 @@ for ($testFold = 0; $testFold < $foldsNumber; $testFold++) {
 
 		$tree = new DecisionTree($dataTraining, range(0, count($data[0]) - 2));
 		$tree->build();
-		//$tree->debug();
+		//$tree->debug(); //Mostra arvore gerada na tela
 
 		$randomForest->addTree($tree);
 	} //Fim Etapa Treinamento | Floresta pronta
@@ -61,14 +45,16 @@ for ($testFold = 0; $testFold < $foldsNumber; $testFold++) {
 		$classifier = new Classifier($randomForest, $instancia);
 		$result = $classifier->execute();
 
-		echo "\n" . implode(";", $instancia) . "=>" . $result . "\n";
-
 		$measure->compute($instancia, $result, $positiveValue);
 	} //Fim Etapa Testes
 
 } // Fim Folds
 
-echo "\n--------------------\n";
+// Exibe resultados
+echo "\n-----------------------------------------------------------\n";
+echo "\nArquivo: " . $parameters['fileName'] . "\n";
+echo "\nNumero de Arvores: " . $treeNumber . "\n";
+echo "\n-----------------------------------------------------------\n";
 
 echo "\nVerdadeiros Positivos:" . $measure->getTruePositive();
 echo "\nVerdadeiros Negativos:" . $measure->getTrueNegative();
@@ -76,3 +62,4 @@ echo "\nFalsos Positivos:" . $measure->getFalsePositive();
 echo "\nFalsos Negativos:" . $measure->getFalseNegative();
 
 echo "\nF-Measure:" . $measure->calcMeasure();
+echo "\n";
